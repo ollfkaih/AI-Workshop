@@ -21,17 +21,31 @@ const FairtalePage = ({ fairytale }: PageProps) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const generateNewStoryImage = async () => {
-    // Use a try catch to fetch an image from the endpoint ‘/api/openai-image’
-    // The endpoint expects a POST request with a JSON body containing a prompt (imagePrompt)
-    // The response is a JSON object with a text property
-    // Set the storyImage state to the text property of the response object
-    // If the response object does not have a text property, log an error to the console
+    // Replace the placeholder prompt with the actual title from fairytale.
+    const prompt = title;  // Assuming that you only want to send the title as your prompt.
 
-    const prompt = `I am a placeholder prompt, I should be replaced with something more interesting`
+    setIsLoading(true);
+    const response = await fetch('/api/openai-image', {
+      method: 'POST',
+      body: JSON.stringify({ prompt }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+
+    setIsLoading(false);
+
+    if ("text" in data) {
+      setStoryImage(data.text);
+    } else {
+      console.error("The response object does not have a text property");
+    }
   }
 
   const handleGenerateImage = async () => {
-    // Add your code here
+    await generateNewStoryImage();
   }
 
   return (
