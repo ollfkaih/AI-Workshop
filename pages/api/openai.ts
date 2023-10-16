@@ -22,10 +22,10 @@ export default async function handler(
   req: GenerateNextApiRequest,
   res: NextApiResponse<ResponseData>
 ) {
-  const promt = req.body.prompt
+  const prompt = req.body.prompt
   const maxTokens = req.body.maxTokens || 1000
 
-  if (!promt || promt === '') {
+  if (!prompt || prompt === '') {
     res.status(400).json({ text: 'No prompt provided' })
     return
   }
@@ -34,7 +34,7 @@ export default async function handler(
     const aiResult = await openai.createCompletion(
       {
         model: 'text-davinci-003',
-        prompt: promt,
+        prompt,
         max_tokens: maxTokens, // max number of tokens to generate
         temperature: 1, // higher temperature means more creative, less coherent
         frequency_penalty: 0.5, // penalize new tokens based on their existing frequency, between -2.0 and 2.0
