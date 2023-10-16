@@ -9,7 +9,7 @@ const OpenAISanity = (props: StringInputProps) => {
   // The onChange function is used to update the value of the field
   const { value, onChange } = props
   const [isLoading, setIsLoading] = useState(false)
-  const [promt, setPromt] = useState('')
+  const [prompt, setPrompt] = useState('')
 
   const callApi = async () => {
     /**
@@ -31,11 +31,26 @@ const OpenAISanity = (props: StringInputProps) => {
     /**
      * See code example on landing page
      */
-    alert('You need to implement this function')
+
+    // JavaScript code
+    const response = await fetch('/api/openai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt: prompt, maxTokens: 100 }),
+    }).then((res) => res.json())
+
+    if (response.text) {
+      onChange(response.text ? set(response.text) : unset())
+    } else {
+      console.log('error')
+
+    }
   }
 
   const generateStory = async () => {
-    // Here you can call the function callApi() you just wrote and handle some errors
+    callApi();
   }
 
   return (
@@ -48,7 +63,7 @@ const OpenAISanity = (props: StringInputProps) => {
           padding={4}
           placeholder="Once upon a time... "
           value={promt}
-          // maxLength={maxLength}
+        // maxLength={maxLength}
         />
         {/* <Flex justify="flex-end" padding={1}>
           <Label>
