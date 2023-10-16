@@ -39,7 +39,7 @@ const OpenAISanity = (props: StringInputProps) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt: prompt, maxTokens: 100 }),
+      body: JSON.stringify({ prompt: prompt, maxTokens: 10000 }),
     }).then((res) => res.json())
     setIsLoading(false);
 

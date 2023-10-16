@@ -45,8 +45,7 @@ export default async function handler(
     const response = aiResult.data.choices[0].text || "Sorry, I don't know"
     res.status(200).json({ text: response })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ text: "Sorry, I don't know" })
+    res.status(500).json({ text: error.toString() })
     return
   }
 }
