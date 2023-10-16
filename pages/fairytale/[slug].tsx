@@ -16,13 +16,15 @@ interface Query {
 const FairtalePage = ({ fairytale }: PageProps) => {
   // destructure the fairytale object
   const { title } = fairytale
+  console.log(fairytale)
 
   const [storyImage, setStoryImage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [storyText  , setStoryText] = useState(fairytale.story ?? undefined);
 
-  const generateNewStoryImage = async () => {
+  const generateNewStoryImage = async (promptString?) => {
     // Replace the placeholder prompt with the actual title from fairytale.
-    const prompt = title;  // Assuming that you only want to send the title as your prompt.
+    const prompt = promptString ?? title;  // Assuming that you only want to send the title as your prompt.
 
     setIsLoading(true);
     const response = await fetch('/api/openai-image', {
@@ -33,6 +35,7 @@ const FairtalePage = ({ fairytale }: PageProps) => {
       },
     });
 
+    
     const data = await response.json();
 
     setIsLoading(false);
@@ -45,9 +48,10 @@ const FairtalePage = ({ fairytale }: PageProps) => {
   }
 
   const handleGenerateImage = async () => {
-    await generateNewStoryImage();
+    
+    await generateNewStoryImage(storyText.slice(0,1000));
   }
-
+  
   return (
     <main className="p-10">
       <h1>{title}</h1>
@@ -60,6 +64,7 @@ const FairtalePage = ({ fairytale }: PageProps) => {
       {isLoading && <p>Loading...</p>}
 
       {storyImage && <Image src={storyImage} alt="" width={256} height={256} />}
+      {storyText}
     </main>
   )
 }
