@@ -22,6 +22,7 @@ const OpenAISanity = (props: StringInputProps) => {
      * 2. the body will contain prompt
      * 3. response will have text value
      * 4. Use the two function imported from sanity to set the data if response is successful
+     * 
      *
      *
      * BONUS
@@ -32,6 +33,9 @@ const OpenAISanity = (props: StringInputProps) => {
      * See code example on landing page
      */
 
+    const promptEngineerPrefix = 
+'You are an API endpoint, and will only answer in json format. I want the answer to this prompt to be in the following json format: {"story": string, "characters": [{"description": string}],"imageDescription": string,The following prompt will determine how to fill out this json document.\n ================================================================\n\n\n'
+
     // JavaScript code
     setIsLoading(true);
     const response = await fetch('/api/openai', {
@@ -39,7 +43,7 @@ const OpenAISanity = (props: StringInputProps) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt: prompt, maxTokens: 3000 }),
+      body: JSON.stringify({ prompt: promptEngineerPrefix + prompt, maxTokens: 3000 }),
     }).then((res) => res.json())
     setIsLoading(false);
 

@@ -18,13 +18,26 @@ const FairtalePage = ({ fairytale }: PageProps) => {
   const { title } = fairytale
   console.log(fairytale)
 
+  var jsonObject; 
+  
+  try {
+    jsonObject = JSON.parse(fairytale.story ?? '{"description": "test"}');
+  } 
+  catch (e) {
+    jsonObject = {};
+  } 
+  const story = jsonObject.story ?? "";
+  const characters = jsonObject.characters ?? [];
+  const imageDescription = jsonObject.imageDescription ?? "";
+
   const [storyImage, setStoryImage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [storyText  , setStoryText] = useState(fairytale.story ?? undefined);
+  const [characterImages, setCharacterImages] = useState<string[]>([]);
 
-  const generateNewStoryImage = async (promptString?) => {
+  const generateNewStoryImage = async (jsonObject) => {
     // Replace the placeholder prompt with the actual title from fairytale.
-    const prompt = promptString ?? title;  // Assuming that you only want to send the title as your prompt.
+    const prompt = jsonObject?.imageDescription ?? jsonObject?.story ?? title;  // Assuming that you only want to send the title as your prompt.
 
     setIsLoading(true);
     const response = await fetch('/api/openai-image', {
@@ -35,7 +48,24 @@ const FairtalePage = ({ fairytale }: PageProps) => {
       },
     });
 
-    
+    // await all the promises for the character images.
+    const characterImagePromises = characters.map(async (character) => {
+      const characterPrompt = character.description ?? "";
+      const characterResponse = await fetch('/api/openai-image', {
+        method: 'POST',
+        body: JSON.stringify({ prompt: characterPrompt }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const characterData = await characterResponse.json();
+      return characterData.text;
+    });
+
+    const characterImages = await Promise.all(characterImagePromises);
+    setCharacterImages(characterImages);
+
     const data = await response.json();
 
     setIsLoading(false);
@@ -49,7 +79,7 @@ const FairtalePage = ({ fairytale }: PageProps) => {
 
   const handleGenerateImage = async () => {
     
-    await generateNewStoryImage(storyText.slice(0,1000));
+    await generateNewStoryImage(jsonObject);
   }
   
   return (
@@ -64,7 +94,17 @@ const FairtalePage = ({ fairytale }: PageProps) => {
       {isLoading && <p>Loading...</p>}
 
       {storyImage && <Image src={storyImage} alt="" width={256} height={256} />}
+      {characterImages && characterImages.length > 0 && characterImages.map((characterImage) => {
+        return <Image src={characterImage} alt="" width={256} height={256} />
+      }
+      )}
       {storyText}
+      <br/>
+      <hr/>
+      <hr/>
+      <p>Image Desciption:</p>
+      {jsonObject?.imageDescription ?? jsonObject?.story ?? "No image description found."}
+      {characterImages}
     </main>
   )
 }
