@@ -33,6 +33,7 @@ const OpenAISanity = (props: StringInputProps) => {
      */
 
     // JavaScript code
+    setIsLoading(true);
     const response = await fetch('/api/openai', {
       method: 'POST',
       headers: {
@@ -40,6 +41,7 @@ const OpenAISanity = (props: StringInputProps) => {
       },
       body: JSON.stringify({ prompt: prompt, maxTokens: 100 }),
     }).then((res) => res.json())
+    setIsLoading(false);
 
     if (response.text) {
       onChange(response.text ? set(response.text) : unset())
@@ -49,13 +51,13 @@ const OpenAISanity = (props: StringInputProps) => {
     }
   }
 
-    const generateStory = async () => {
-      if (!prompt) return
-      try {
-        callApi()
-      } catch (error) {
-        console.log('error', error)
-      }
+  const generateStory = async () => {
+    if (!prompt) return
+    try {
+      callApi()
+    } catch (error) {
+      console.log('error', error)
+    }
   }
 
   return (
