@@ -49,8 +49,13 @@ const OpenAISanity = (props: StringInputProps) => {
     }
   }
 
-  const generateStory = async () => {
-    callApi();
+    const generateStory = async () => {
+      if (!prompt) return
+      try {
+        callApi()
+      } catch (error) {
+        console.log('error', error)
+      }
   }
 
   return (
