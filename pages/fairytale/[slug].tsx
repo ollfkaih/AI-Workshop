@@ -98,7 +98,7 @@ const FairtalePage = ({ fairytale }: PageProps) => {
         return <Image src={characterImage} alt="" width={256} height={256} />
       }
       )}
-      {storyText}
+      {jsonObject.story ?? storyText}
       <br/>
       <hr/>
       <hr/>
