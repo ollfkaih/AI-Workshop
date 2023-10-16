@@ -59,10 +59,10 @@ const OpenAISanity = (props: StringInputProps) => {
 
       <Card>
         <TextArea
-          onChange={(event) => setPromt(event.currentTarget.value)}
+          onChange={(event) => setPrompt(event.currentTarget.value)}
           padding={4}
           placeholder="Once upon a time... "
-          value={promt}
+          value={prompt}
         // maxLength={maxLength}
         />
         {/* <Flex justify="flex-end" padding={1}>
